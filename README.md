@@ -14,3 +14,9 @@ This project is a **Dynamic Data Table Manager** that allows users to:
 - Import and export table data as CSV files.
 - Edit and delete rows inline.
 - Persist user preferences using **localStorage**.
+
+---
+
+## ScreenShot of the Application
+
+![Screenshot](./ss1.png)
