@@ -12,12 +12,15 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store/store';
-import { updateRow, deleteRow } from '../store/tableSlice';
+
+import { addRow, updateRow, deleteRow } from '../store/tableSlice';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function DataTable() {
   const dispatch = useDispatch();
-  const { rows, visibleColumns } = useSelector((s: RootState) => s.table);
+  const rows = useSelector((s: RootState)=> s.table.rows) || [];
+  const visibleColumns = useSelector((s:RootState)=> s.table.visibleColumns);
+  //const { rows, visibleColumns } = useSelector((s: RootState) => s.table);
 
   const [orderBy, setOrderBy] = useState<string>(visibleColumns[0] ?? 'name');
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
@@ -28,13 +31,18 @@ export default function DataTable() {
   const [editValues, setEditValues] = useState<Record<string, any>>({});
   const [confirmDelete, setConfirmDelete] = useState<{ open: boolean; id?: string }>({ open: false });
 
-  const rowsFiltered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return rows;
-    return rows.filter(r =>
-      Object.values(r).some(v => String(v).toLowerCase().includes(q))
-    );
-  }, [rows, search]);
+  // const rowsFiltered = useMemo(() => {
+  //   const q = search.trim().toLowerCase();
+  //   if (!q) return rows;
+  //   return rows.filter(r =>
+  //     Object.values(r).some(v => String(v).toLowerCase().includes(q))
+  //   );
+  // }, [rows, search]);
+  const rowsFiltered = rows.filter(row => Object.values(row).some(val =>
+    String(val).toLowerCase().includes(search.toLowerCase())
+  ));
+  
+  
 
   const rowsSorted = useMemo(() => {
     const copy = [...rowsFiltered];
@@ -61,6 +69,16 @@ export default function DataTable() {
     const row = rows.find(r => r.id === id)!;
     setEditValues({ ...row });
   };
+
+//butn logic
+  const handleAddDummy =()=>{
+    const dummyData = {id: uuidv4(), name: 'Asha K', email: 'asha@example.com', age: 28, role: 'Designer'}
+    dispatch(addRow(dummyData));
+  };
+  
+
+
+
 
   const saveEdit = () => {
     if (!editingId) return;
@@ -93,11 +111,16 @@ export default function DataTable() {
       <Box display="flex" gap={2} mb={2} alignItems="center">
         <TextField label="Search" variant="outlined" size="small" onChange={(e) => { setSearch(e.target.value); setPage(0); }} />
         <Box flex={1} />
-        <Button variant="contained" onClick={() => {
-    
-          const newId = uuidv4();
-          dispatch(updateRow({ id: newId, changes: {} } as any)); // noop placeholder
-        }}>Add dummy</Button>
+        <Button
+  variant="contained"
+  color="primary"
+  onClick={handleAddDummy}
+  sx={{ mb: 2 }}
+>
+  Add Dummy
+</Button>
+
+         
       </Box>
 
       <Table>

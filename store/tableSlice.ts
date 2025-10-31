@@ -23,12 +23,12 @@ const persistedVisible = typeof window !== 'undefined'
 
 const initialState: TableState = {
   rows: [
-    { id: '1', name: 'Asha K', email: 'asha@example.com', age: 28, role: 'Designer' },
+    
     { id: '2', name: 'Rajat S', email: 'rajat@example.com', age: 31, role: 'Developer' },
     { id: '3', name: 'Meena P', email: 'meena@example.com', age: 24, role: 'QA' },
     { id: '4', name: 'Sahil T', email: 'sahil@example.com', age: 35, role: 'Manager' },
   ],
-  visibleColumns: ['name', 'email', 'age', 'role'],   // ✅ make sure this exists
+  visibleColumns: ['name', 'email', 'age', 'role'],   
   allColumns: ['name', 'email', 'age', 'role'],
 };
 
@@ -40,8 +40,11 @@ const tableSlice = createSlice({
     setRows: (state, action: PayloadAction<RowData[]>) => {
       state.rows = action.payload;
     },
-    addRow: (state, action: PayloadAction<RowData>) => {
-      state.rows.unshift(action.payload);
+    // addRow: (state, action: PayloadAction<RowData>) => {
+    //   state.rows.unshift(action.payload);
+    // },
+    addRow:(state, action)=>{
+      state.rows.push(action.payload);
     },
     updateRow: (state, action: PayloadAction<{ id: string; changes: Partial<RowData> }>) => {
       const { id, changes } = action.payload;
